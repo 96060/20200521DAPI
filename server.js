@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser')
+var apiRouter = require('./routes/apiRouter');
 var app = express();
 // require('ejs');
 
@@ -14,12 +15,18 @@ app.set('views', path.join(__dirname+'/views'));
 app.set('view engine', 'ejs');
 // ejs <- app의 라이브러리
 
-// app.use();
+app.use(bodyParser.json()); // 파싱 (undifined 공백 처리)
+app.use(bodyParser.urlencoded({extended:false}));
 
-app.get('/', function(request, response) {
-    console.log(request);
-    response.render('./index') // set 'ejs' 덕분에 index.뒤처리 안 해도 됨
+app.use('/api', apiRouter); // middleware 처리
+app.use('/', (req,res)=>{
+    res.send("HELLO!");
 });
+// get('/') -> 라우팅 처리(중계)
+// app.get('/', function(request, response) {
+//     console.log(request.body);
+//     response.render('./index') // set 'ejs' 덕분에 index.뒤처리 안 해도 됨
+// });
 // listen(포트, url, baklog, callback)
 app.listen(8080, function() {
     console.log("Server is starting at http://localhost:8080");
